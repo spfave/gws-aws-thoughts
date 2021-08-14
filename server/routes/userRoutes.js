@@ -46,4 +46,28 @@ router.get('/users/:username', (req, res) => {
   });
 });
 
+router.post('/users', (req, res) => {
+  const params = {
+    TableName: table,
+    Item: {
+      username: req.body.username,
+      createdAt: Date.now(),
+      thought: req.body.thought,
+    },
+  };
+
+  dynamodb.put(params, (err, data) => {
+    if (err) {
+      console.error(
+        'Unable to add item. Error: ',
+        JSON.stringify(err, null, 2)
+      );
+      return res.status(500).json(err);
+    }
+
+    console.log('Added item: ', JSON.stringify(data, null, 2));
+    res.json({ Added: JSON.stringify(data, null, 2) });
+  });
+});
+
 module.exports = router;
